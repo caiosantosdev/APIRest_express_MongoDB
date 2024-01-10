@@ -1,7 +1,7 @@
 import http from "http";
 
 const PORT = 3000;
-const rotas = {
+const routes = {
     "/" : "Curso de node js com express e mongo db",
     "/livros" : "Entrei na rota livros",
     "/autores" : "Entrei na rota autores",
@@ -9,7 +9,7 @@ const rotas = {
 
 const server = http.createServer((req, res) => {
     res.writeHead(200, { "Content-Type": "text/plain" });
-    res.end(rotas[req.url]);
+    res.end(routes[req.url]);
 });
 
 server.listen(PORT, () => {
