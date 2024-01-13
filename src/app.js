@@ -1,4 +1,16 @@
 import express from "express";
+import databaseConnect from "./config/dbConnect.js";
+
+const connection = await databaseConnect();
+
+connection.on("error", (erro) => {
+    console.log("erro de conexao:" , erro);
+});
+
+connection.once("open", () => {
+    console.log("Conexao com o banco feita com sucesso");
+})
+
 
 const app = express();
 app.use(express.json());
@@ -54,3 +66,4 @@ app.delete("/books/:id", (req, res) => {
 
 
 export default app;
+// mongodb+srv://ieeebyte:<password>@ieeebytecluster.hevuba9.mongodb.net/?retryWrites=true&w=majority
