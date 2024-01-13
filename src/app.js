@@ -68,4 +68,3 @@ app.delete("/books/:id", (req, res) => {
 
 
 export default app;
-// mongodb+srv://ieeebyte:<password>@ieeebytecluster.hevuba9.mongodb.net/?retryWrites=true&w=majority
