@@ -1,4 +1,5 @@
 import livroModel from "../models/Livro.js";
+import { authorModel } from "../models/Autor.js";
 
 class bookController{
     static async bookSearching ( req, res) {
@@ -19,10 +20,13 @@ class bookController{
         }
     };
     static async createBook( req, res ) {
+        const newBook = req.body;
         try{
-            const newBook = await livroModel.create(req.body);
+            const findedAuthor = await authorModel.findById(newBook.author);
+            const completeBook = { ...newBook , author: {...findedAuthor } };
+            const createdBook = await livroModel.create(completeBook);
             res.status(201).json({ message : "Criado com sucesso",
-                                    livro: newBook
+                                    livro: createdBook
                                  });
         }catch(erro){
             res.status(500).json({ message : `${erro.message} - falha ao cadastrar livro`})
