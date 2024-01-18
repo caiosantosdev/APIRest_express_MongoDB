@@ -1,5 +1,6 @@
 import livroModel from "../models/Livro.js";
 import { authorModel } from "../models/Autor.js";
+import { query } from "express";
 
 class bookController{
     static async bookSearching ( req, res) {
@@ -19,6 +20,15 @@ class bookController{
             res.status(500).json({message: `${error.message} - falha na busca do livro`})
         }
     };
+    static async bookSearchingByPublishingCo ( req , res ) {
+        const publishingCo = req.query.editora;
+        try{
+            const publishingCoBooks = await livroModel.find({editora : publishingCo});
+            res.status(200).json(publishingCoBooks);
+        }catch(error){
+            res.status(500).json({message: `${error.message} - falha na busca`})
+        }
+    }
     static async createBook( req, res ) {
         const newBook = req.body;
         try{
