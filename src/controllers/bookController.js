@@ -10,7 +10,7 @@ class bookController{
         }catch(error){
             res.status(500).json({message: `${error.message} - falha na requisição`})
         }
-    };
+    }
     static async bookSearchingById ( req, res) {
         try{
             const id = req.params.id;
@@ -19,7 +19,7 @@ class bookController{
         }catch(error){
             res.status(500).json({message: `${error.message} - falha na busca do livro`})
         }
-    };
+    }
     static async bookSearchingByPublishingCo ( req , res ) {
         const publishingCo = req.query.editora;
         try{
@@ -41,7 +41,7 @@ class bookController{
         }catch(erro){
             res.status(500).json({ message : `${erro.message} - falha ao cadastrar livro`})
         }
-    };
+    }
     static async updateBook ( req, res) {
         try{
             const newBook = req.body;
@@ -52,7 +52,7 @@ class bookController{
         }catch(error){
             res.status(500).json({message: `${error.message} - falha na atualização do livro`})
         }
-    };
+    }
     static async deleteBook ( req, res) {
         try{
             const id = req.params.id;
@@ -61,8 +61,8 @@ class bookController{
         }catch(error){
             res.status(500).json({message: `${error.message} - falha na requisição DELETE`})
         }
-    };
-};
+    }
+}
 
 export default bookController;
 

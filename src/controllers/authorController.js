@@ -1,15 +1,15 @@
-import { authorModel , authorSchema } from "../models/Autor.js";
+import { authorModel } from "../models/Autor.js";
 
-class authorController{
-    static async authorSearching ( req, res) {
+class AuthorController{
+    static async authorSearching ( req, res ) {
         try{
             const authorList = await authorModel.find({})
             res.status(200).json(authorList);
         }catch(error){
             res.status(500).json({message: `${error.message} - falha na requisição`})
         }
-    };
-    static async authorSearchingById ( req, res) {
+    }
+    static async authorSearchingById ( req, res ) {
         try{
             const id = req.params.id;
             const author = await authorModel.findById(id);
@@ -17,7 +17,7 @@ class authorController{
         }catch(error){
             res.status(500).json({message: `${error.message} - falha na busca do autor`})
         }
-    };
+    }
     static async createAuthor( req, res ) {
         try{
             const newAuthor = await authorModel.create(req.body);
@@ -27,8 +27,8 @@ class authorController{
         }catch(erro){
             res.status(500).json({ message : `${erro.message} - falha ao cadastrar autor`})
         }
-    };
-    static async updateAuthor ( req, res) {
+    }
+    static async updateAuthor ( req, res ) {
         try{
             const newAuthor = req.body;
             const id = req.params.id;
@@ -38,8 +38,8 @@ class authorController{
         }catch(error){
             res.status(500).json({message: `${error.message} - falha na atualização do autor`})
         }
-    };
-    static async deleteAuthor ( req, res) {
+    }
+    static async deleteAuthor ( req, res ) {
         try{
             const id = req.params.id;
             await authorModel.findByIdAndDelete(id);
@@ -47,8 +47,8 @@ class authorController{
         }catch(error){
             res.status(500).json({message: `${error.message} - falha na requisição DELETE`})
         }
-    };
-};
+    }
+}
 
-export default authorController;
+export default AuthorController;
 
