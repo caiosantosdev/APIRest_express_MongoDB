@@ -34,7 +34,7 @@ class bookController{
             next(error);
         }
     }
-    static async createBook( req, res ) {
+    static async createBook( req, res, next ) {
         const newBook = req.body;
         try{
             const findedAuthor = await authorModel.findById(newBook.author);

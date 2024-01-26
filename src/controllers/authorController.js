@@ -29,7 +29,7 @@ class AuthorController{
             res.status(201).json({ message : "Criado com sucesso",
                                     author: newAuthor
                                  });
-        }catch(erro){
+        }catch(error){
             next(error);    
         }
     }

@@ -1,8 +1,7 @@
 import express from "express";
-import mongoose from "mongoose";
 import databaseConnect from "./config/dbConnect.js";
 import routes from "./routes/index.js";
-// import { errorHandler } from "./middlewares/errorHandler.js";
+import { errorHandler } from "./middlewares/errorHandler.js";
 
 const connection = await databaseConnect();
     
