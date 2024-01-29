@@ -1,6 +1,6 @@
 import livroModel from "../models/Livro.js";
 import { authorModel } from "../models/Autor.js";
-import { query } from "express";
+import NotFindedError from "../errors/NotFindedError.js";
 
 class bookController{
     static async bookSearching ( req, res, next ) {
@@ -16,7 +16,7 @@ class bookController{
             const id = req.params.id;
             const book = await livroModel.findById(id);
             if(!book){
-                res.status(404).send({ message : "Livro não encontrado" });
+                throw new NotFindedError("Livro não encontrado.");
             }
             else{
                 res.status(200).json(book);

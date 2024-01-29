@@ -2,6 +2,7 @@ import express from "express";
 import databaseConnect from "./config/dbConnect.js";
 import routes from "./routes/index.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
+import { manipulator_404 } from "./middlewares/404manipulator.js";
 
 const connection = await databaseConnect();
     
@@ -20,6 +21,8 @@ const app = express();
 routes(app);
 
 //middleware
+app.use(manipulator_404);
+
 app.use(errorHandler);
 
 export default app;

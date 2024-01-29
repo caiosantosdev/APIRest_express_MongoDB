@@ -1,19 +1,20 @@
 import mongoose from "mongoose";
+import BaseError from "../errors/BaseError.js";
+import BadRequest from "../errors/BadRequest.js";
+import NotFindedError from "../errors/NotFindedError.js";
 
 function errorHandler (erro, req, res, next) {
-
     if(erro instanceof mongoose.Error.CastError){
-        res.status(400).send({ message : "Dados fornecidos de maneira incorreta." });
+        new BadRequest().sendResponse(res);
     }
     else if (erro instanceof mongoose.Error.ValidationError) {
-        const mensagensErro = Object.values(erro.errors)
-        .map( erro => erro.message)
-        .join("; ");
-
-        res.status(400).send({ message : `Os seguintes erros foram encontrados: ${mensagensErro}`});
+        new ValidationError(erro).sendResponse(res);
+    }
+    else if( erro instanceof NotFindedError){
+        erro.sendResponse(res);
     }
     else{
-        res.status(500).json({ message: `${erro.message} - falha na busca do autor` });
+        new BaseError().sendResponse(res);
     }
 }
 

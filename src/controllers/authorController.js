@@ -1,3 +1,4 @@
+import NotFindedError from "../errors/NotFindedError.js";
 import { authorModel } from "../models/Autor.js";
 
 class AuthorController{
@@ -17,7 +18,7 @@ class AuthorController{
                 res.status(200).json(author);
             }
             else{
-                res.status(404).send({message : "Autor não encontrado."});
+                throw new NotFindedError("Autor não encontrado.");
             }
         }catch(error){
             next(error);
