@@ -15,14 +15,33 @@ const livroSchema = new mongoose.Schema({
         required: [
             true,
             "É obrigatório ter editora."
-        ]
+        ],
+        validate: {
+            validator: function (publishing) {
+                //lista de editoras não permitidas
+                const forbiddenPublishings = ["Raios" , "Saraiva", "Pegasus"];
+                //verifica e retorna para o campo validate o valor
+                return forbiddenPublishings.indexOf(publishing) === -1;
+            },
+            message: "{VALUE} não é uma editora permitida"
+        }
     },
     preco: { type : mongoose.Schema.Types.Number },
-    paginas: { type : mongoose.Schema.Types.Number },
+    paginas: { 
+        type : mongoose.Schema.Types.Number,
+        min: [
+            10,
+             "O numero minimo de paginas é 10. Valor fornecido: {VALUE}"
+        ],
+        max: [
+            5000,
+            "O numero de paginas excedeu a quantidade maxima. Valor Fornecido: {VALUE}"
+        ]
+    },
     //talvez tenha que refatorar esse author tanto no banco de dados quanto no Controller de Livro.
     author: authorSchema
 }, {versionKey : false});
 
-const livro = mongoose.model("livros", livroSchema);
+const bookModel = mongoose.model("livros", livroSchema);
 
-export default livro;
+export { bookModel };

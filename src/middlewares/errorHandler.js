@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import BaseError from "../errors/BaseError.js";
 import BadRequest from "../errors/BadRequest.js";
 import NotFindedError from "../errors/NotFindedError.js";
+import ValidationError from "../errors/ValidationError.js";
 
 function errorHandler (erro, req, res, next) {
     if(erro instanceof mongoose.Error.CastError){
