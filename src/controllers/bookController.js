@@ -25,10 +25,27 @@ class bookController{
             next(error);
         }
     }
-    static async bookSearchingByPublishingCo ( req, res, next) {
-        const publishingCo = req.query.editora;
+    static async bookSearchingByFilter ( req, res, next) {
         try{
-            const publishingCoBooks = await bookModel.find({editora : publishingCo});
+            const { publishingCo, title } = req.query;
+            
+            const search = {};
+            
+            const regex = new RegExp(title, "i");
+            
+            if(publishingCo){
+                search.editora = publishingCo;
+            }
+            if(title){
+                search.titulo = regex;
+            }
+            //outra opção:
+            // if(title){
+            //     search.titulo = { $regex: titulo, $options: "i"};
+            // }
+            
+            
+            const publishingCoBooks = await bookModel.find(search);
             res.status(200).json(publishingCoBooks);
         }catch(error){
             next(error);

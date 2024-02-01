@@ -5,6 +5,7 @@ import { errorHandler } from "./middlewares/errorHandler.js";
 import { manipulator_404 } from "./middlewares/404manipulator.js";
 
 const connection = await databaseConnect();
+
 connection.on("error", (erro) => {
     console.log("erro de conexao:" , erro);
 });

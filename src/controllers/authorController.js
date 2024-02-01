@@ -1,5 +1,5 @@
 import NotFindedError from "../errors/NotFindedError.js";
-import { authorModel } from "../models/Autor.js";
+import { authorModel } from "../models/index.js";
 
 class AuthorController{
     static async authorSearching ( req, res , next) {
