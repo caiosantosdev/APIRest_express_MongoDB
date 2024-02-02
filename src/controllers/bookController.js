@@ -25,9 +25,9 @@ class bookController{
             next(error);
         }
     }
-    static async bookSearchingByFilter ( req, res, next) {
+    static async bookSearchingFilter ( req, res, next) {
         try{
-            const { publishingCo, title } = req.query;
+            const { publishingCo, title , minPag, maxPag} = req.query;
             
             const search = {};
             
@@ -39,14 +39,38 @@ class bookController{
             if(title){
                 search.titulo = regex;
             }
+            //caso minPag
+            if(minPag !== null && maxPag === undefined){
+                const minPagBooks = await bookModel.find({paginas: {$gte: minPag}});
+                res.status(200).json({
+                    message : "Os seguintes livros foram encontrados:",
+                    livros: minPagBooks
+                });
+            }
+            //caso maxPag
+            else if( minPag === undefined && maxPag !== undefined){
+                const maxPagBooks = await bookModel.find({paginas: {$lte: maxPag}});
+                res.status(200).json({
+                    message : "Os seguintes livros foram encontrados:",
+                    livros: maxPagBooks
+                });
+            }
+            //caso os dois
+            else if( minPag !== undefined && maxPag !== undefined){
+                const pagBooks = await bookModel.find({paginas: {$gte: minPag, $lte: maxPag}});
+                res.status(200).json({
+                    message : "Os seguintes livros foram encontrados:",
+                    livros: pagBooks
+                });
+            }
             //outra opção:
             // if(title){
             //     search.titulo = { $regex: titulo, $options: "i"};
             // }
-            
-            const publishingCoBooks = await bookModel.find(search);
-            
-            res.status(200).json(publishingCoBooks);
+            if(publishingCo || title){
+                const books = await bookModel.find(search);
+                res.status(200).json(books);
+            }
         }catch(error){
             next(error);
         }
