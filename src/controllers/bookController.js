@@ -44,8 +44,8 @@ class bookController{
             //     search.titulo = { $regex: titulo, $options: "i"};
             // }
             
-            
             const publishingCoBooks = await bookModel.find(search);
+            
             res.status(200).json(publishingCoBooks);
         }catch(error){
             next(error);

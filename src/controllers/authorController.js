@@ -24,6 +24,35 @@ class AuthorController{
             next(error);
         }
     }
+    static async authorSearchingFilter ( req, res, next) {
+        try{
+            const { name, nationality } = req.query;
+            
+            const search = {};
+            
+            const regexName = new RegExp(name, "i")
+            
+            if(name){
+                search.nome = regexName;
+            }
+            if(nationality){
+                search.nacionalidade = { $regex: nationality, $options: "i" };
+            }
+            
+            const success = await authorModel.find(search);
+            
+            if(success){
+                res.status(200).json({
+                    message: "Autores encontrados:",
+                    autores: success
+                });
+            }else{
+                throw new NotFindedError("não há autores com esse nome.");
+            }
+        }catch(error){
+            next(error);
+        }
+    }
     static async createAuthor( req, res, next ) {
         try{
             const newAuthor = await authorModel.create(req.body);
