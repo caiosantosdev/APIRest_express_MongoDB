@@ -27,60 +27,23 @@ class bookController{
     }
     static async bookSearchingFilter ( req, res, next) {
         try{
-            const { publishingCo, title , minPag, maxPag, authorName} = req.query;
+            const { publishingCo, title , minPag, maxPag, authorName } = req.query;
             
-            const search = {};
+            const search = await searchFilter ( publishingCo, title , minPag, maxPag, authorName );
             
-            const regex = new RegExp(title, "i");
+            if(search !== null){
+                const booksByAuthor = await bookModel.find(search);
+                console.log(booksByAuthor);
+                res.status(200).json({
+                    message : "Os seguintes livros foram encontrados:",
+                    livros: booksByAuthor
+                });
+            }else{
+                res.status(200).json({
+                    message: "O author não possui livros registrados"
+                });
+            }
             
-            if(publishingCo){
-                search.editora = publishingCo;
-            }
-            if(title){
-                search.titulo = regex;
-            }
-            //caso minPag
-            if(minPag !== undefined && maxPag === undefined){
-                const minPagBooks = await bookModel.find({paginas: {$gte: minPag}});
-                res.status(200).json({
-                    message : "Os seguintes livros foram encontrados:",
-                    livros: minPagBooks
-                });
-            }
-            //caso maxPag
-            else if( minPag === undefined && maxPag !== undefined){
-                const maxPagBooks = await bookModel.find({paginas: {$lte: maxPag}});
-                res.status(200).json({
-                    message : "Os seguintes livros foram encontrados:",
-                    livros: maxPagBooks
-                });
-            }
-            //caso os dois
-            else if( minPag !== undefined && maxPag !== undefined){
-                const pagBooks = await bookModel.find({paginas: {$gte: minPag, $lte: maxPag}});
-                res.status(200).json({
-                    message : "Os seguintes livros foram encontrados:",
-                    livros: pagBooks
-                });
-            }
-            if(authorName){
-                const author = await authorModel.findOne({ nome : authorName});
-                const authorId = author._id;
-                search.author = authorId;
-                const books = await bookModel.find({author: authorId});
-                res.status(200).json({
-                    message : "Os seguintes livros foram encontrados:",
-                    livros: books
-                });
-            }
-            //outra opção:
-            // if(title){
-            //     search.titulo = { $regex: titulo, $options: "i"};
-            // }
-            if(publishingCo || title){
-                const books = await bookModel.find(search);
-                res.status(200).json(books);
-            }
         }catch(error){
             next(error);
         }
@@ -119,6 +82,37 @@ class bookController{
             next(error);
         }
     }
+}
+
+async function searchFilter( publishingCo, title, minPag, maxPag, authorName ){
+    
+    const search = {};
+    
+    if(publishingCo){
+        const publishingRegex = new RegExp(publishingCo, "i");
+        search.editora = publishingRegex;
+    }
+    if(title){
+        const titleRegex = new RegExp(title, "i");
+        search.titulo = titleRegex;
+    }
+    
+    if(minPag || maxPag) search.paginas = {};
+    
+    if(minPag) search.paginas.$gte = minPag;
+    
+    if(maxPag) search.paginas.$lte = maxPag;
+    
+    if(authorName){
+        const author = await authorModel.findOne({ "nome" : {$regex: authorName, $options: "i"}});
+        if(!author){
+            throw new NotFindedError("autor não encontrado.");
+        }
+        const authorId = author._id.toString();
+        search.author = authorId;
+    }
+    
+    return search;
 }
 
 export default bookController;

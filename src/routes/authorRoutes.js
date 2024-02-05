@@ -8,6 +8,6 @@ routes.get("/authors/search", AuthorController.authorSearchingFilter);
 routes.get("/authors/:id", AuthorController.authorSearchingById);
 routes.post("/authors", AuthorController.createAuthor);
 routes.put("/authors/:id", AuthorController.updateAuthor);
-routes.delete("authors/:id", AuthorController.deleteAuthor);
+routes.delete("/authors/:id", AuthorController.deleteAuthor);
 
 export default routes;
