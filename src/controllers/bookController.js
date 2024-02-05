@@ -1,12 +1,16 @@
 import { bookModel } from "../models/index.js";
 import { authorModel } from "../models/Autor.js";
 import NotFindedError from "../errors/NotFindedError.js";
+import BadRequest from "../errors/BadRequest.js";
 
 class bookController{
-    static async bookSearching ( req, res, next ) {
+    static bookSearchingAll ( req, res, next ) {
         try{
-            const bookList = await bookModel.find({})
-            res.status(200).json(bookList);
+            const bookSearch = bookModel.find();
+            
+            req.resultado = bookSearch;
+            
+            next();
         }catch(error){
             next(error);
         }
@@ -32,12 +36,9 @@ class bookController{
             const search = await searchFilter ( publishingCo, title , minPag, maxPag, authorName );
             
             if(search !== null){
-                const booksByAuthor = await bookModel.find(search);
-                console.log(booksByAuthor);
-                res.status(200).json({
-                    message : "Os seguintes livros foram encontrados:",
-                    livros: booksByAuthor
-                });
+                const booksByAuthor = bookModel.find(search);
+                req.resultado = booksByAuthor;
+                next();
             }else{
                 res.status(200).json({
                     message: "O author não possui livros registrados"
@@ -51,10 +52,10 @@ class bookController{
     static async createBook( req, res, next ) {
         const newBook = req.body;
         try{
-            // const findedAuthor = await authorModel.findById(newBook.author);
-            // const completeBook = { ...newBook , author: {...findedAuthor } };
             const completeBook = { ...newBook , author: newBook.author};
+            
             const createdBook = await bookModel.create(completeBook);
+            
             res.status(201).json({ message : "Criado com sucesso",
                                     livro: createdBook
                                  });
