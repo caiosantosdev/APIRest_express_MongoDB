@@ -27,7 +27,7 @@ class bookController{
     }
     static async bookSearchingFilter ( req, res, next) {
         try{
-            const { publishingCo, title , minPag, maxPag} = req.query;
+            const { publishingCo, title , minPag, maxPag, authorName} = req.query;
             
             const search = {};
             
@@ -40,7 +40,7 @@ class bookController{
                 search.titulo = regex;
             }
             //caso minPag
-            if(minPag !== null && maxPag === undefined){
+            if(minPag !== undefined && maxPag === undefined){
                 const minPagBooks = await bookModel.find({paginas: {$gte: minPag}});
                 res.status(200).json({
                     message : "Os seguintes livros foram encontrados:",
@@ -63,6 +63,16 @@ class bookController{
                     livros: pagBooks
                 });
             }
+            if(authorName){
+                const author = await authorModel.findOne({ nome : authorName});
+                const authorId = author._id;
+                search.author = authorId;
+                const books = await bookModel.find({author: authorId});
+                res.status(200).json({
+                    message : "Os seguintes livros foram encontrados:",
+                    livros: books
+                });
+            }
             //outra opção:
             // if(title){
             //     search.titulo = { $regex: titulo, $options: "i"};
@@ -78,8 +88,9 @@ class bookController{
     static async createBook( req, res, next ) {
         const newBook = req.body;
         try{
-            const findedAuthor = await authorModel.findById(newBook.author);
-            const completeBook = { ...newBook , author: {...findedAuthor } };
+            // const findedAuthor = await authorModel.findById(newBook.author);
+            // const completeBook = { ...newBook , author: {...findedAuthor } };
+            const completeBook = { ...newBook , author: newBook.author};
             const createdBook = await bookModel.create(completeBook);
             res.status(201).json({ message : "Criado com sucesso",
                                     livro: createdBook

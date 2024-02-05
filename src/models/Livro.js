@@ -39,7 +39,7 @@ const livroSchema = new mongoose.Schema({
         ]
     },
     //talvez tenha que refatorar esse author tanto no banco de dados quanto no Controller de Livro.
-    author: authorSchema
+    author: { type : mongoose.Schema.Types.ObjectId }
 }, {versionKey : false});
 
 const bookModel = mongoose.model("livros", livroSchema);
