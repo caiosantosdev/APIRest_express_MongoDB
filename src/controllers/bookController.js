@@ -63,22 +63,30 @@ class bookController{
             next(error);
         }
     }
-    static async updateBook ( req, res) {
+    static async updateBook ( req, res, next) {
         try{
             const newBook = req.body;
             const id = req.params.id;
-            await bookModel.findByIdAndUpdate(id, newBook);
-            res.status(200).json({ message : "Livro atualizado com sucesso",
-                                    livro : newBook});
+            const updatedBook = await bookModel.findByIdAndUpdate(id, newBook);
+            if(updatedBook){
+                res.status(200).json({ message : "Livro atualizado com sucesso",
+                                        livro : updatedBook});
+            }else{
+                throw new NotFindedError("Livro não encontrado");
+            }
         }catch(error){
             next(error);
         }
     }
-    static async deleteBook ( req, res) {
+    static async deleteBook ( req, res, next) {
         try{
             const id = req.params.id;
-            await bookModel.findByIdAndDelete(id);
-            res.status(200).json({ message : "Livro deletado com sucesso"});
+            const deletedBook = await bookModel.findByIdAndDelete(id);
+            if(deletedBook){
+                res.status(200).json({ message : "Livro deletado com sucesso"});
+            }else{
+                throw new NotFindedError("Livro não encontrado");   
+            }
         }catch(error){
             next(error);
         }
